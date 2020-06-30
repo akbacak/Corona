@@ -1,4 +1,3 @@
-# https://machinelearningmastery.com/how-to-load-large-datasets-from-directories-for-deep-learning-with-keras/
 
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
