@@ -32,10 +32,10 @@ train_datagen = ImageDataGenerator(rescale=1. / 255,
                                    horizontal_flip=True,
                                    fill_mode='nearest')
 
- 
+
 
 val_datagen = ImageDataGenerator(rescale=1. / 255)
-val_datagen = ImageDataGenerator(rescale=1. / 255) 
+test_datagen = ImageDataGenerator(rescale=1. / 255) 
 
 train_generator = train_datagen.flow_from_directory(train_data_path,
                                                     target_size=(img_rows, img_cols),
@@ -51,7 +51,7 @@ validation_generator = val_datagen.flow_from_directory(val_data_path,
 
  
 
-test_generator = val_datagen.flow_from_directory(test_data_path,
+test_generator = test_datagen.flow_from_directory(test_data_path,
                                                         target_size=(img_rows, img_cols),
                                                         batch_size=batch_size,
                                                         class_mode='categorical')
