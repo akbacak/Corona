@@ -6,25 +6,25 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix
 
- 
+
 
 #Start
-train_data_path = 'coronaImages/train'
-val_data_path  = 'coronaImages/val'
-test_data_path  = 'coronaImages/test'
-img_rows = 150
-img_cols = 150
-epochs = 3
-batch_size = 32
-num_of_train_samples = 427
-num_of_val_samples  = 80
-num_of_test_samples  = 118
- 
+train_data_path      = '../Datasets/train'
+val_data_path        = '../Datasets/val'
+test_data_path       = '../Datasets/test'
+img_rows             = 224
+img_cols             = 224
+epochs               = 1000
+batch_size           = 8
+num_of_train_samples = 752
+num_of_val_samples   = 252
+num_of_test_samples  = 158
+
 
 #Image Generator
 
 train_datagen = ImageDataGenerator(rescale=1. / 255,
-                                   rotation_range=40,
+                                   #rotation_range=40,
                                    width_shift_range=0.2,
                                    height_shift_range=0.2,
                                    shear_range=0.2,
@@ -34,31 +34,27 @@ train_datagen = ImageDataGenerator(rescale=1. / 255,
 
 
 
-val_datagen = ImageDataGenerator(rescale=1. / 255)
-test_datagen = ImageDataGenerator(rescale=1. / 255) 
+
+val_datagen  = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_generator = train_datagen.flow_from_directory(train_data_path,
                                                     target_size=(img_rows, img_cols),
                                                     batch_size=batch_size,
                                                     class_mode='categorical')
+                                                    #save_to_dir = "./im_gen_outputs")
 
- 
 
 validation_generator = val_datagen.flow_from_directory(val_data_path,
                                                         target_size=(img_rows, img_cols),
                                                         batch_size=batch_size,
                                                         class_mode='categorical')
 
- 
 
 test_generator = test_datagen.flow_from_directory(test_data_path,
                                                         target_size=(img_rows, img_cols),
                                                         batch_size=batch_size,
                                                         class_mode='categorical')
-
-
-
-
 
 
 # Build model
@@ -78,33 +74,29 @@ model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(4))
 model.add(Activation('softmax'))
- 
 
 model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
 
- 
+
 
 #Train
 model.fit_generator(train_generator,
-                    steps_per_epoch=num_of_train_samples // batch_size,
+                    #steps_per_epoch=num_of_train_samples // batch_size,
+                    steps_per_epoch=240 // batch_size,
                     epochs=epochs,
                     validation_data=validation_generator,
                     validation_steps=num_of_val_samples // batch_size)
 
- 
+
 
 #Confution Matrix and Classification Report
-Y_pred = model.predict_generator(test_generator, num_of_test_samples // batch_size+1)
+Y_pred = model.predict_generator(test_generator, num_of_test_samples // batch_size)
 y_pred = np.argmax(Y_pred, axis=1)
 print('Confusion Matrix')
 print(confusion_matrix(test_generator.classes, y_pred))
 print('Classification Report')
-target_names = ['1', '2', '3', '4']
+target_names = ['bakterial', 'covid', 'normal', 'viral']
 print(classification_report(test_generator.classes, y_pred, target_names=target_names))
-
-
-
-
 
