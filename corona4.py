@@ -6,8 +6,6 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix
 
-
-
 #Start
 train_data_path      = '../Datasets/train'
 val_data_path        = '../Datasets/val'
@@ -84,7 +82,7 @@ model.compile(loss='categorical_crossentropy',
 #Train
 model.fit_generator(train_generator,
                     #steps_per_epoch=num_of_train_samples // batch_size,
-                    steps_per_epoch=240 // batch_size,
+                    steps_per_epoch=2400 // batch_size,
                     epochs=epochs,
                     validation_data=validation_generator,
                     validation_steps=num_of_val_samples // batch_size)
