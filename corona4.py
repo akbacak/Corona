@@ -39,20 +39,20 @@ test_datagen = ImageDataGenerator(rescale=1. / 255)
 train_generator = train_datagen.flow_from_directory(train_data_path,
                                                     target_size=(img_rows, img_cols),
                                                     batch_size=batch_size,
-                                                    class_mode='categorical')
+                                                    class_mode='binary')
                                                     #save_to_dir = "./im_gen_outputs")
 
 
 validation_generator = val_datagen.flow_from_directory(val_data_path,
                                                         target_size=(img_rows, img_cols),
                                                         batch_size=batch_size,
-                                                        class_mode='categorical')
+                                                        class_mode='binary')
 
 
 test_generator = test_datagen.flow_from_directory(test_data_path,
                                                         target_size=(img_rows, img_cols),
                                                         batch_size=batch_size,
-                                                        class_mode='categorical')
+                                                        class_mode='binary')
 
 
 # Build model
