@@ -12,22 +12,22 @@ val_data_path        = '../Datasets/val'
 test_data_path       = '../Datasets/test'
 img_rows             = 224
 img_cols             = 224
-epochs               = 1000
-batch_size           = 8
-num_of_train_samples = 752
-num_of_val_samples   = 252
-num_of_test_samples  = 158
+epochs               = 100
+batch_size           = 2
+num_of_train_samples = 675
+num_of_val_samples   = 231
+num_of_test_samples  = 142
 
 
 #Image Generator
 
 train_datagen = ImageDataGenerator(rescale=1. / 255,
                                    #rotation_range=40,
-                                   width_shift_range=0.2,
-                                   height_shift_range=0.2,
+                                   #width_shift_range=0.2,
+                                   #height_shift_range=0.2,
                                    shear_range=0.2,
                                    zoom_range=0.2,
-                                   horizontal_flip=True,
+                                   #horizontal_flip=True,
                                    fill_mode='nearest')
 
 
@@ -95,6 +95,6 @@ y_pred = np.argmax(Y_pred, axis=1)
 print('Confusion Matrix')
 print(confusion_matrix(test_generator.classes, y_pred))
 print('Classification Report')
-target_names = ['bakterial', 'covid', 'normal', 'viral']
+target_names = ['covid', 'viral']
 print(classification_report(test_generator.classes, y_pred, target_names=target_names))
 
