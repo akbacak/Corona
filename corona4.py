@@ -1,11 +1,15 @@
 import numpy as np
 from keras import backend as K
-from keras.models import Sequential
+from keras.models import Sequential,Input,Model
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras.preprocessing.image import ImageDataGenerator 
+from keras.applications import VGG16
+
+
+
 
 #Start
 train_data_path      = '../Datasets/train'
@@ -18,7 +22,7 @@ batch_size           = 8
 num_of_train_samples = 675
 num_of_val_samples   = 231
 num_of_test_samples  = 142
- 
+image_size           = 256 
 
 #Image Generator
 
@@ -54,24 +58,23 @@ test_generator = test_datagen.flow_from_directory(test_data_path,
                                                         class_mode='categorical')
 
 
-# Build model
-model = Sequential()
-model.add(Convolution2D(32, (3, 3), input_shape=(img_rows, img_cols, 3), padding='valid'))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Convolution2D(32, (3, 3), padding='valid'))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Convolution2D(64, (3, 3), padding='valid'))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Flatten())
-model.add(Dense(64))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(2))
-model.add(Activation('softmax'))
+
+
+vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(image_size, image_size, 3))
+for layer in vgg_conv.layers[:-4]:
+    layer.trainable = False
  
+
+model = Model(inputs = vgg_conv.input, outputs=vgg_conv.output) 
+Flatten = Flatten()(model.output)
+Dense_2 = Dense(4096)(Flatten)
+Dense_96 = Dense(512 ,activation='sigmoid')(Dense_2)
+Dense_5 = Dense(2, activation='softmax')(Dense_96)
+model = Model(input=model.input, output=Dense_5)
+
+
+
+
 
 model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
@@ -97,8 +100,3 @@ print(confusion_matrix(test_generator.classes, y_pred))
 print('Classification Report')
 target_names = [ 'covid', 'viral']
 print(classification_report(test_generator.classes, y_pred, target_names=target_names))
-
-
-
-
-
